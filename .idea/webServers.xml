@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="ab046df1-951a-4a57-a292-7c0f52220c33" name="ev3dev">
-        <fileTransfer accessType="SFTP" host="ev3dev.local" port="22" sshConfigId="afc9eb36-d663-403f-816d-7f5a52d954af" sshConfig="robot@ev3dev.local:22 password">
+        <fileTransfer accessType="SFTP" host="penguin-box.local" port="22" sshConfigId="afc9eb36-d663-403f-816d-7f5a52d954af" sshConfig="robot@penguin-box.local:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
