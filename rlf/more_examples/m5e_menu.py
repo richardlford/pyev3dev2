@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Example showing for tkinter and ttk how to:
   -- 1. Make a menubar with menu's
