@@ -19,11 +19,50 @@ import os
 
 print("Starting")
 
-ir = InfraredSensor()
-cl = ColorSensor()
-ts = TouchSensor()
-us = UltrasonicSensor()
+try:
+    ir = InfraredSensor()
+except:
+    ir = None
+
+try:
+    cl = ColorSensor()
+except:
+    cl = None
+try:
+    ts = TouchSensor()
+except:
+    ts = None
+
+try:
+    us = UltrasonicSensor()
+except:
+    us = None
+
+if ir:
+    print("Found IR")
+if cl:
+    print("found color sensor")
+if ts:
+    print("Found touch sensor")
+if us:
+    print("Found untrasonic sensor")
+
 sound = Sound()
+
+motors = [m for m in list_motors()]
+motors.sort(key=lambda m: m.address)
+i = 0
+for m in motors:
+    print("motor["+str(i)+"]={address: "+str(m.address)+", driver: "+m.driver_name+
+          ", position="+str(m.position)+", stop_action: "+str(m.stop_action))
+    i += 1
+
+motor_speeds = [50, 50, 50, 50]
+#motora = Motor(OUTPUT_A)
+#motorb = Motor(OUTPUT_B)
+#motorc = Motor(OUTPUT_C)
+#motord = Motor(OUTPUT_D)
+#motors = (motora, motorb, motorc, motord)
 
 haveDisplay = os.environ.get('DISPLAY')
 if haveDisplay:
@@ -35,7 +74,6 @@ parm_vals = {}
 def make_parameters_frame(root, parm_labels):
     global buttonsLabel
     frm = ttk.Frame(root, padding=10)
-    frm.grid()
     ttk.Label(frm, text="Property").grid(column=0, row=0)
     ttk.Label(frm, text="|").grid(column=1, row=0)
     ttk.Label(frm, text="Property Value").grid(column=2, row=0)
@@ -78,33 +116,121 @@ def make_input_frame(root):
     result_label.pack(fill='x', expand=True, pady=10)
     return frame
 
+motor_data={}
+
+def make_motor_frame(root, motor_index):
+    frm = ttk.Frame(root, padding=10)
+    next_row = 0
+    data = {}
+    ttk.Label(frm, text="-------------").grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    ttk.Label(frm, text="-----------------------------").grid(column=2, row=next_row)
+    next_row += 1
+    ttk.Label(frm, text="Motor#").grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    ttk.Label(frm, text=str(motor_index)).grid(column=2, row=next_row)
+    next_row += 1
+    parm_label = "address"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "driver"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "position"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "stop_action"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "speed"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "is_running"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "is_ramping"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "is_holding"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "is_overloaded"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    parm_label = "is_stalled"
+    ttk.Label(frm, text=parm_label).grid(column=0, row=next_row)
+    ttk.Label(frm, text="|").grid(column=1, row=next_row)
+    value_label = ttk.Label(frm, text="")
+    value_label.grid(column=2, row=next_row)
+    data[parm_label] = value_label
+    next_row += 1
+    motor_data[motor_index] = data
+    return frm
+
+def make_motors_frames(root):
+    for i in range(len(motors)):
+        frm = make_motor_frame(root, i)
+        frm.pack(fill=tkinter.X)
 
 def make_interface_main():
     root = Tk()
     root.title("Robot Control Panel")
     root.geometry("400x400-2000-800")
-    parm_frame = make_parameters_frame(root, ["buttons", "color", "ir proximity", "ultrasonic", "touch"])
+    captions = ["buttons"]
+    if cl:
+        captions.append("color")
+    if ir:
+        captions.append("ir proximity")
+    if us:
+        captions.append("ultrasonic")
+    if ts:
+        captions.append("touch")
+    parm_frame = make_parameters_frame(root, captions)
     parm_frame.pack(fill=tkinter.X)
     inp_frame = make_input_frame(root)
     inp_frame.pack(fill=tkinter.X)
-
-    # layout on the root window
-    #root.columnconfigure(0, weight=1)
-    #root.columnconfigure(1, weight=1)
-
-    #parm_frame.grid(column=0, row=0)
-    #inp_frame.grid(column=0, row=1)
+    make_motors_frames(root)
     return root
-
 
 if haveDisplay:
     root = make_interface_main()
 
-motora = Motor(OUTPUT_A)
-motorb = Motor(OUTPUT_B)
-motorc = Motor(OUTPUT_C)
-motord = Motor(OUTPUT_D)
-motors = (motora, motorb, motorc, motord)
 
 selected_motor_index = 0
 
@@ -245,7 +371,26 @@ def my_on_change(changed_buttons):
     show_buttons(result)
     for delta in result:
         process_button_change(delta)
+sound.play_file("../sounds/animals/snake_hiss.wav")
+def show_motor(motor_index):
+    m = motors[motor_index]
+    data = motor_data[motor_index]
+    data["address"]["text"] = m.address
+    data["driver"]["text"] = m.driver_name
+    data["position"]["text"] = str(m.position)
+    data["stop_action"]["text"] = m.stop_action
+    data["speed"]["text"] = str(m.speed)
+    data["is_running"]["text"] = str(m.is_running)
+    data["is_ramping"]["text"] = str(m.is_ramping)
+    data["is_holding"]["text"] = str(m.is_holding)
+    data["is_overloaded"]["text"] = str(m.is_overloaded)
+    data["is_stalled"]["text"] = str(m.is_stalled)
+    pass
 
+def show_motors():
+    for i in range(len(motors)):
+        show_motor(i)
+    pass
 
 ir.on_change = my_on_change
 
@@ -255,9 +400,14 @@ if haveDisplay:
 # Stop program by long-pressing touch sensor button
 while True:
     ir.process()
-    show_color()
-    show_ir_proximity()
-    show_ultrasonic()
-    show_touch()
+    if cl:
+        show_color()
+    if ir:
+        show_ir_proximity()
+    if us:
+        show_ultrasonic()
+    if ts:
+        show_touch()
+    show_motors()
     root.update()
     sleep(0.01)
