@@ -1,6 +1,6 @@
+#!/usr/bin/env python3
 from tkinter import *
 from tkinter import ttk
-import tk
 
 parm_vals = {}
 
@@ -50,10 +50,8 @@ def main():
                variable=scale_var2)
     sc2.pack()
     f2 = ttk.Frame(root)
-    canvas = Canvas(f2, relief=RAISED, width=210, height=210)
-    canvas.delete()
+    canvas = Canvas(f2, relief=SUNKEN, width=210, height=210, borderwidth=2)
     canvas.bind("<Button1-Motion>", mymotion)
-    canvas.create_rectangle(5, 5, 205, 205)
     canvas.pack()
     oval = canvas.create_oval(xcenter-oval_radius, ycenter-oval_radius,
                               xcenter+oval_radius, ycenter+oval_radius, fill='red')
